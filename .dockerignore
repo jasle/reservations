@@ -1,6 +1,5 @@
-CHANGELOG.md
 CONTRIBUTING
 Dockerfile
 README.md
-#deployment/
+deployment/
 *.yml.example*
