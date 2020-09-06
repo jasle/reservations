@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
-require File.expand_path('../boot', __FILE__)
+require_relative 'boot'
+
+require 'active_storage/engine'
 
 require 'rails/all'
 
-# If you have a Gemfile, require the gems listed there, including any gems
+# Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups(:default, Rails.env))
 
@@ -62,6 +64,21 @@ module Reservations
 
     # Load all helpers in all views
     config.action_controller.include_all_helpers = true
+
+    # Use Vips for processing variants.
+    config.active_storage.variant_processor = :vips
+
+    # Overwrite default application response
+    config.action_dispatch.hosts_response_app = -> env do
+      request = ActionDispatch::Request.new(env)
+      Rails.logger.warn "Client attempted using blocked host: " + request.host
+      format = 'text/plain'
+      body = 'Unauthorized'
+      [403, {
+        "Content-Type" => "#{format}; charset=#{ActionDispatch::Response.default_charset}",
+        "Content-Length" => body.bytesize.to_s
+      }, [body]]
+    end
 
     # set up routing options for Reports (at a minimum)
     config.after_initialize do

@@ -1,9 +1,5 @@
 # Welcome to Reservations
 
-[![Build Status](https://travis-ci.org/YaleSTC/reservations.svg?branch=master)](https://travis-ci.org/YaleSTC/reservations)
-[![Code Climate](https://codeclimate.com/github/YaleSTC/reservations/badges/gpa.svg)](https://codeclimate.com/github/YaleSTC/reservations)
-[![Test Coverage](https://codeclimate.com/github/YaleSTC/reservations/badges/coverage.svg)](https://codeclimate.com/github/YaleSTC/reservations)
-[![Dependency Status](https://gemnasium.com/YaleSTC/reservations.svg)](https://gemnasium.com/YaleSTC/reservations)
 [![Inline docs](http://inch-ci.org/github/yalestc/reservations.svg?branch=master&style=flat)](http://inch-ci.org/github/yalestc/reservations)
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://github.com/YaleSTC/reservations/wiki/Heroku-Deployment-Guide)
@@ -25,7 +21,7 @@ There are two mains steps to setting up Reservations: setting up a deployment se
 
 ### Prerequisites
 You'll need the following to run Reservations:
-* [Ruby 2.3](http://www.ruby-lang.org/)
+* [Ruby 2.6.5](http://www.ruby-lang.org/)
 * [Bundler](http://bundler.io/)
 * a database server ([MySQL](http://www.mysql.com/) or any database supported by Rails)
 * [ImageMagick](http://www.imagemagick.org/script/index.php)
@@ -83,6 +79,18 @@ Reservations uses environment variables for configuration (following the princip
 In the `development` and `test` Rails environments, most of the configuration is set in the `config/secrets.yml` file. **IMPORTANT** You should copy the `config/secrets.yml` file and regenerate all of the secret keys / tokens using `rake secret`. You should also copy over the `config/database.yml.example.*` file relevant to your platform and follow the instructions linked to above to set up your database.
 
 In `production`, the `config/database.yml.example.production` should be used as it will refer to the relevant environment variables. Additionally, you must define most of the configuration environment variables listed [here](https://github.com/YaleSTC/reservations/wiki/Configuration) in order for Reservations to work.
+
+#### Developing with Docker
+To develop this app locally with Docker, 
+1. Copy `.env.dev.template` to `.env`. See `.env.example` for a full list of available environment variables.
+2. Copy `config/database.development.yml` to `config/database.yml`.
+3. Run `docker-compose up -d`.
+4. On initial setup, run `docker-compose run web bin/setup`.
+
+To develop locally without Docker:
+1. Copy `.env.example` to `.env`.
+2. Copy `config/database.local.yml` to `config/database.yml`.
+3. Run rake db:create and rake db:schema:load
 
 #### Authentication
 By default, Reservations uses e-mail addresses and passwords to authenticate users with the [`devise`](https://rubygems.org/gems/devise) gem. It also supports the CAS authentication system, using the gem [`devise_cas_authenticatable`](https://rubygems.org/gems/devise_cas_authenticatable). If you want to use CAS authentication you must set the `CAS_AUTH` and `CAS_BASE_URL` environment variables to the appropriate values (see [here](https://github.com/YaleSTC/reservations/wiki/Configuration#authentication) for more details). Switching between authentication methods after initial setup is possible with some caveats (see our [wiki](https://github.com/YaleSTC/reservations/wiki/Authentication#switching-authentication-methods) for more details).

@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
       'the application, please run $bundle exec rake app:setup in the '\
       'terminal. For more information, please see our github page: '\
       'https://github.com/YaleSTC/reservations'
-    render file: 'application_setup/index', layout: 'application'
+    render template: 'application_setup/index', layout: 'application'
   end
 
   def load_configs
@@ -331,7 +331,7 @@ class ApplicationController < ActionController::Base
   # modify redirect after signing in
   def after_sign_in_path_for(user)
     # CODE FOR CAS LOGIN --> NEW USER
-    if ENV['CAS_AUTH'] && current_user && current_user.id.nil? &&
+    if ENV['CAS_AUTH'].present? && current_user && current_user.id.nil? &&
        current_user.username
       # store username in session since there's a request in between
       session[:new_username] = current_user.username

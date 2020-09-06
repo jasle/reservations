@@ -13,7 +13,7 @@ RailsAdmin.config do |config|
   config.current_user_method(&:current_user)
 
   ## == Cancan ==
-  config.authorize_with :cancan
+  config.authorize_with :cancancan
 
   ## == PaperTrail ==
   # PaperTrail >= 3.0.0
@@ -73,10 +73,4 @@ RailsAdmin.config do |config|
     # history_index
     # history_show
   end
-
-  # Include only models we care about
-  config.included_models =
-    [Announcement, AppConfig, Blackout, Category, CheckinProcedure,
-     CheckoutProcedure, EquipmentModel, EquipmentItem, Requirement,
-     Reservation, User]
 end

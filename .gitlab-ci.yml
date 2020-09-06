@@ -1,0 +1,81 @@
+stages:
+  - test
+  - build
+
+.rails_template: &rails_template
+  image: ruby:2.6.5
+
+  stage: test
+
+  services:
+    - mysql:5.7
+
+  variables:
+    MYSQL_DATABASE: gitlab_ci_test
+    MYSQL_ROOT_PASSWORD: reservations
+
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - vendor/ruby
+  
+  before_script:
+    - apt-get update -q
+    - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+    - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+    - curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt-get install -y nodejs yarn
+    - gem install bundler --no-document
+    - bundle install -j $(nproc) --path vendor/ruby
+    - yarn install
+    - cp config/database.gitlab.yml config/database.yml
+
+rails_test:
+  <<: *rails_template
+
+  script: 
+    - curl -sL https://deb.nodesource.com/setup_12.x | bash -
+    - curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+    - echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
+    - apt-get update && apt-get install -y --no-install-recommends nodejs unzip openjdk-11-jre-headless xvfb libxi6 libgconf-2-4 google-chrome-stable
+    - CHROME_DRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`
+    - wget -N http://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip -P ~/
+    - unzip ~/chromedriver_linux64.zip -d ~/
+    - rm ~/chromedriver_linux64.zip
+    - mv -f ~/chromedriver /usr/local/bin/chromedriver
+    - chown root:root /usr/local/bin/chromedriver
+    - chmod 0755 /usr/local/bin/chromedriver
+    - bundle exec rake
+
+rails_style:
+  <<: *rails_template
+
+  script: 
+    - bundle exec rake check_style
+
+rails_audit:
+  <<: *rails_template
+
+  script: 
+    - bundle exec bundle audit update
+    - bundle exec bundle audit --ignore CVE-2016-7103
+
+yarn_audit:
+  <<: *rails_template
+    
+  script:
+    - yarn run improved-yarn-audit
+
+build:
+  image: "docker:latest"
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - docker:dind
+  stage: build
+  script:
+    - export IMAGE_TAG=$(echo -en $CI_BUILD_REF_NAME | tr -c '[:alnum:]_.-' '-')
+    - docker login -u "gitlab-ci-token" -p "$CI_BUILD_TOKEN" $CI_REGISTRY
+    - docker build -f Dockerfile.prod --pull -t "$CI_REGISTRY_IMAGE:$IMAGE_TAG" .
+    - docker push "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
+  only:
+   - tags

@@ -2,9 +2,91 @@
 * This file will be updated whenever a new release is put into production.
 * Any problems should be reported via the "report an issue" link in the footer of the application.
 
+## v7.1.1 - 2020-09-04
+### Security
+* Updated rails_admin from 2.0.0 to 2.0.2 for undisclosed xss vulnerability ([#1841](https://gitlab.com/yale-sdmp/reservations/issues/1841)).
+
+## v7.1.0 - 2020-08-31
+### Changed
+* Changed ActiveStorage to use VIPS on backend ([#1836](https://gitlab.com/yale-sdmp/reservations/issues/1836)).
+* Changed Rails to not return default error page for bad host requests ([#1837](https://gitlab.com/yale-sdmp/reservations/issues/1837)).
+* Removed eslint and added yarn-improved-audit ([#1826](https://gitlab.com/yale-sdmp/reservations/issues/1826)).
+* Changed late fee and replace fee to be required in new equipment model form ([#1840](https://gitlab.com/yale-sdmp/reservations/issues/1840)).
+
+### Removed
+* Removed references to Travis CI ([#1835](https://gitlab.com/yale-sdmp/reservations/issues/1835)).
+
+### Fixed
+* Fixed issue with favicon displaying ([#1833](https://gitlab.com/yale-sdmp/reservations/issues/1833)).
+* Fixed issue with building from Dockerfiles ([#1838](https://gitlab.com/yale-sdmp/reservations/issues/1838)).
+
+## v7.0.0 - 2020-08-17
+### Important
+* [See here for upgrade instructions](https://gitlab.com/yale-sdmp/reservations/-/wikis/Upgrade-Path-to-Reservations-7.0-and-Required-Action)*
+
+### Added
+* Added bundler audit ([#1788](https://gitlab.com/yale-sdmp/reservations/issues/1788)).
+* Added Gitlab CI ([#1785](https://gitlab.com/yale-sdmp/reservations/issues/1785)).
+* Added rake to to mirror data ([#1810](https://gitlab.com/yale-sdmp/reservations/issues/1810)).
+* Added gem image_processing for ActiveStorage ([#1824](https://gitlab.com/yale-sdmp/reservations/issues/1824)).
+
+### Changed
+* Updated Rails from 5.2.3 -> 6.0.0 ([#1781](https://gitlab.com/yale-sdmp/reservations/issues/1781)).
+* Updated Boostrap Sass from 3.3.7 -> 3.4.1 ([#1783](https://gitlab.com/yale-sdmp/reservations/issues/1783)).
+* Updated Rubyzip from 1.2.1 -> 1.3.0 ([#1789](https://gitlab.com/yale-sdmp/reservations/issues/1789)).
+* Updated Simple Form from 4.0.1 -> 5.0.1 ([#1790](https://gitlab.com/yale-sdmp/reservations/issues/1790)).
+* Changed CI pipeline to use latest Chromedriver ([#1795](https://gitlab.com/yale-sdmp/reservations/issues/1795)).
+* Changed files to be handled with ActiveStorage rather than Paperclip ([#1796](https://gitlab.com/yale-sdmp/reservations/issues/1796)).
+* Changed language to be gender neutral ([#1809](https://gitlab.com/yale-sdmp/reservations/issues/1809)).
+* Changed Cron to be part of production Dockerfile container ([#1827](https://gitlab.com/yale-sdmp/reservations/issues/1827)).
+* Updated CanCanCan from 2.0.0 to 3.1.0 ([#1832](https://gitlab.com/yale-sdmp/reservations/issues/1832)).
+
+### Fixed
+* Fixed deprecation warnings ([#1787](https://gitlab.com/yale-sdmp/reservations/issues/1787)).
+* Fixed CI build for cron ([#1816](https://gitlab.com/yale-sdmp/reservations/issues/1816)).
+* Fixed Docker logging to STDOUT ([#1819](https://gitlab.com/yale-sdmp/reservations/issues/1819)).
+* Fixed environment variable handling in Dockerfile.prod ([#1821](https://gitlab.com/yale-sdmp/reservations/issues/1821)).
+* Fixed image loading in Checkout view ([#1825](https://gitlab.com/yale-sdmp/reservations/issues/1825)).
+* Fixed image thumbnail loading ([#1822](https://gitlab.com/yale-sdmp/reservations/issues/1822)).
+* Fixed deploy with sassc workaround ([#1829](https://gitlab.com/yale-sdmp/reservations/issues/1829)).
+* Fixed asset compilation to account for RAILS_RELATIVE_URL_ROOT env variable ([#1830](https://gitlab.com/yale-sdmp/reservations/issues/1830)).
+* Fixed defailt ActionMailer email ([#1831](https://gitlab.com/yale-sdmp/reservations/issues/1831)).
+
+### Security
+* Updated Nokogiri from 10.10.4 to 10.10.5 for CVE-2019-13117 ([#1792](https://gitlab.com/yale-sdmp/reservations/issues/1792)).
+* Updated Loofah from 2.3.0 to 2.3.1 for CVE-2019-15587 ([#1793](https://gitlab.com/yale-sdmp/reservations/issues/1793)).
+* Updated Puma from 4.1.0 to 4.3.1 for CVE-2019-16770 ([#1794](https://gitlab.com/yale-sdmp/reservations/issues/1794)).
+* Updated Rack from 2.0.7 to 2.0.8 for CVE-2019-167820 ([#1798://gitlab.com/yale-sdmp/reservations/issues/1798)).
+* Updated Rails from 6.0 to 6.0.3.1, Rake from 12.0.0 to 12.3.3, and kaminari from 0.17.0 to 1.2.1 ([#1814://gitlab.com/yale-sdmp/reservations/issues/1814)).
+* Updated Devise from 4.7.1 to 4.7.2 and Devise CAS from 1.10.0 to 1.10.4 ([#1820://gitlab.com/yale-sdmp/reservations/issues/1820)).
+
+## v6.4.1 
+### Important
+*This is an intermediary release towards 7.0 and should not be used in production
+ [See here for upgrade instructions](https://gitlab.com/yale-sdmp/reservations/-/wikis/Upgrade-Path-to-Reservations-7.0-and-Required-Action)*
+### Added
+* Added ActiveStorage database migrations ([#1805](https://gitlab.com/yale-sdmp/reservations/issues/1805)).
+
+## v6.4.0 - 2019-10-29
+### Important
+*This release has not been tested under production conditions. Use at your own risk.*
+
+### Added
+* Added docker-compose for local development ([#1811](https://gitlab.com/yale-sdmp/reservations/issues/1811)).
+* Added production Docker deployment ([#1812](https://gitlab.com/yale-sdmp/reservations/issues/1812)).
+
+### Changed
+* Updated Rails from 5.1.7 -> 5.2.3 ([#1780](https://gitlab.com/yale-sdmp/reservations/issues/1780)).
+* Updated Ruby from 2.4.1 -> 2.6.5 ([#1782](https://gitlab.com/yale-sdmp/reservations/issues/1782)).
+
+### Fixed
+* Fixed production Dockerfile and improved layering ([#1815](https://gitlab.com/yale-sdmp/reservations/issues/1815)).
+
 ## v6.3.6 - 2019-01-11
 ### Changed
 * Replaced capybara-webkit with selenium and Chromedriver ([#1769](https://github.com/YaleSTC/reservations/issues/1769)).
+* Updated Rails from 5.1.2 -> 5.1.7 ([#1779](https://gitlab.com/yale-sdmp/reservations/issues/1779)).
+* Updated Bullet from 5.5.1 -> 5.7.5 ([#1779](https://gitlab.com/yale-sdmp/reservations/issues/1779)).
 
 ### Fixed
 * Fixed issue with recurring blackouts being blocked by old reservations ([#1756](https://github.com/YaleSTC/reservations/issues/1756)).

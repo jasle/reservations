@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'concerns/linkable_spec.rb'
-require 'concerns/soft_deletable_spec.rb'
 
 describe EquipmentModel, type: :model do
   it_behaves_like 'linkable'
@@ -27,7 +25,7 @@ describe EquipmentModel, type: :model do
     it { is_expected.to accept_nested_attributes_for(:checkout_procedures) }
     it { is_expected.to have_and_belong_to_many(:associated_equipment_models) }
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_uniqueness_of(:name) }
+    it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
     it { is_expected.to validate_presence_of(:description) }
     it { is_expected.to belong_to(:category) }
     it 'requires an associated category' do
@@ -114,7 +112,7 @@ describe EquipmentModel, type: :model do
         model = FactoryGirl.create(:equipment_model, id: unique_id)
         model.associated_equipment_model_ids = [unique_id]
         expect { model.not_associated_with_self }.to \
-          change { model.errors }
+          change { model.errors.messages }
       end
     end
   end
@@ -275,6 +273,71 @@ describe EquipmentModel, type: :model do
       it 'destroys the model' do
         model = FactoryGirl.create(:equipment_model)
         expect(model.destroy).to be_truthy
+      end
+    end
+
+    describe 'when a photo is attached' do
+      let(:equip_model) { create(:equipment_model) }
+      let(:file) { instance_spy('file') }
+      before do
+        allow(ActiveStorage::Blob).to receive(:service).and_return(file)
+      end
+
+      it 'attaches photo' do
+        photo_blob = ActiveStorage::Blob.new(content_type: 'image/jpg',
+                                             filename: 'test.jpg',
+                                             checksum: 'test',
+                                             byte_size: 1.byte)
+        expect(equip_model.update(photo_blob: photo_blob)).to be_truthy
+      end
+
+      it 'does not attach files with wrong filetype' do
+        photo_blob = ActiveStorage::Blob.new(content_type: 'BAD',
+                                             filename: 'test.jpg',
+                                             checksum: 'test',
+                                             byte_size: 1.byte)
+        expect(equip_model.update(photo_blob: photo_blob)).to be_falsey
+      end
+
+      it 'does not attach files that are too large' do
+        photo_blob = ActiveStorage::Blob.new(content_type: 'image/jpg',
+                                             filename: 'test.jpg',
+                                             checksum: 'test',
+                                             byte_size: 2_000_000.byte)
+        expect(equip_model.update(photo_blob: photo_blob)).to be_falsey
+      end
+    end
+
+    describe 'when a document is attached' do
+      let(:equip_model) { create(:equipment_model) }
+      let(:file) { instance_spy('file') }
+
+      before do
+        allow(ActiveStorage::Blob).to receive(:service).and_return(file)
+      end
+
+      it 'attaches photo' do
+        doc_blob = ActiveStorage::Blob.new(content_type: 'application/pdf',
+                                           filename: 'test.pdf',
+                                           checksum: 'test',
+                                           byte_size: 1.byte)
+        expect(equip_model.update(documentation_blob: doc_blob)).to be_truthy
+      end
+
+      it 'does not attach files with wrong filetype' do
+        doc_blob = ActiveStorage::Blob.new(content_type: 'BAD',
+                                           filename: 'test.pdf',
+                                           checksum: 'test',
+                                           byte_size: 1.byte)
+        expect(equip_model.update(documentation_blob: doc_blob)).to be_falsey
+      end
+
+      it 'does not attach files that are too large' do
+        doc_blob = ActiveStorage::Blob.new(content_type: 'application/pdf',
+                                           filename: 'test.jpg',
+                                           checksum: 'test',
+                                           byte_size: 6_000_000.byte)
+        expect(equip_model.update(documentation_blob: doc_blob)).to be_falsey
       end
     end
   end

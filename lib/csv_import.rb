@@ -81,7 +81,7 @@ module CsvImport
   # tries to save using only the csv data. This method will return
   # false if the data specified in the csv is invalid on the user model.
   def attempt_save_with_csv_data?(user_data)
-    if ENV['CAS_AUTH']
+    if ENV['CAS_AUTH'].present?
       # set the cas login
       user_data[:cas_login] = user_data[:username]
     elsif user_data[:username].blank?
@@ -94,7 +94,7 @@ module CsvImport
     # update role of a bunch of users by passing in only their usernames
     # (instead of all of their user data).
     data_to_update = user_data.keep_if { |_, v| v.present? }
-    user.update_attributes(data_to_update)
+    user.update(data_to_update)
 
     # if the updated or new user is valid, save to database and add to array
     # of successful imports
